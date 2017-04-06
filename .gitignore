@@ -93,3 +93,6 @@ ENV/
 
 #IDE
 .idea/
+
+#secret_files
+client_secret.json
