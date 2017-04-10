@@ -53,13 +53,23 @@ class TestGoogleSpreadsheets(unittest.TestCase):
 
 class TestMovingAverage(unittest.TestCase):
     def test_validation(self):
-        data = [1, 2, 3, 'a']
-
         # check illegal characters in list
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
+            data = [1, 2, 3, 'a']
             ma.MovingAverage(data)
 
-        # check empty characters in list
+        # check negative values
+        with self.assertRaises(ValueError):
+            data = [1, 2, -3, 0]
+            ma.MovingAverage(data, allow_negative_values=False)
+
+        try:
+            data = [1, 2, -3, 0]
+            ma.MovingAverage(data, allow_negative_values=True)
+        except ValueError:
+            self.fail()
+
+        # check empty values in list
         with self.assertRaises(Exception):
             data = [1, 2, 3, '']
             ma.MovingAverage(data)
@@ -83,13 +93,13 @@ class TestMovingAverage(unittest.TestCase):
         self.assertListEqual(ma_list, result)
 
         test_data = [0, 10, 5, -4, 8, 16]
-        moving_average = ma.MovingAverage(test_data, window=3).get_data()
+        moving_average = ma.MovingAverage(test_data, window=3, allow_negative_values=True).get_data()
         ma_list = moving_average.replace(np.nan, '').tolist()
         result = ['', '', 5.0, 11 / 3, 3.0, 20 / 3]
         self.assertListEqual(ma_list, result)
 
         test_data = [0, 12, 40, 671, 4, -531]
-        moving_average = ma.MovingAverage(test_data, window=6).get_data()
+        moving_average = ma.MovingAverage(test_data, window=6, allow_negative_values=True).get_data()
         ma_list = moving_average.replace(np.nan, '').tolist()
         result = ['', '', '', '', '', sum(test_data) / len(test_data)]
         self.assertListEqual(ma_list, result)

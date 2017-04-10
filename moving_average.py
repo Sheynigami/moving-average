@@ -9,10 +9,11 @@ log = logging.getLogger('moving_average')
 
 
 class MovingAverage:
-    def __init__(self, data, window=2, dtype=int):
+    def __init__(self, data, window=2, dtype=int, allow_negative_values=False):
         self._data = data
         self._window = window
         self._dtype = dtype
+        self._allow_negative = allow_negative_values
 
         self._calculate()
 
@@ -24,9 +25,21 @@ class MovingAverage:
         if len(self._data) < self._window:
             raise Exception('Dataset should have at least %s records' % self._window)
 
+    def check_values_type(self):
+        if not all(isinstance(i, self._dtype) for i in self._data):
+            raise TypeError('Dataset contains items with illegal type')
+
+    def check_negative_values(self):
+        if not all(i >= 0 for i in self._data):
+            raise ValueError('Dataset contains negative values')
+
     def validate_data(self):
         self.check_empty_items()
         self.check_enough_items()
+        self.check_values_type()
+
+        if not self._allow_negative:
+            self.check_negative_values()
 
     def _calculate(self):
         self.validate_data()
