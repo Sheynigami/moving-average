@@ -60,9 +60,9 @@ def main():
     except Exception as error:
         return '%s' % error
 
-    moving_average = moving_average.get_data()
+    moving_average_series = moving_average.get_data()
     try:
-        sheet.set_series_column_by_name(moving_average, col_name=settings.MOVING_AVERAGE_COL)
+        sheet.set_series_column_by_name(moving_average_series, col_name=settings.MOVING_AVERAGE_COL)
     except Exception as error:
         return error
 

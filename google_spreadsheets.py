@@ -1,7 +1,6 @@
 import pygsheets
-from pandas import DataFrame, np
+from pandas import np
 from pygsheets import Cell, InvalidArgumentValue, Worksheet as BaseWorksheet, format_addr, ValueRenderOption
-from pygsheets.utils import numericise_all
 
 
 def input_spreadsheet_id():
@@ -78,29 +77,6 @@ class Worksheet(BaseWorksheet):
         except ValueError:
             raise Exception('%s column does not exist' % col_name)
         return index + 1
-
-    def get_as_df(self, head=1, numerize=True, empty_value=''):
-        """
-        get value of wprksheet as a pandas dataframe
-
-        :param head: colum head for df
-        :param numerize: if values should be numerized
-        :param empty_value: valued  used to indicate empty cell value
-
-        :returns: pandas.Dataframe
-
-        """
-        if not DataFrame:
-            raise ImportError("pandas")
-        idx = head - 1
-        values = self.all_values(returnas='matrix', include_empty=True)
-        keys = list(values[idx])
-        if numerize:
-            values = [numericise_all(row[:len(keys)], empty_value) for row in values[idx + 1:]]
-        else:
-            values = [row[:len(keys)] for row in values[idx + 1:]]
-        print(values, keys)
-        return DataFrame(values, columns=keys)
 
     def set_series_column(self, col_index, series):
         values = series.replace(np.nan, '').tolist()
