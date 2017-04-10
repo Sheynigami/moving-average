@@ -81,7 +81,6 @@ class Worksheet(BaseWorksheet):
     def set_series_column(self, col_index, series):
         values = series.replace(np.nan, '').tolist()
         values.insert(0, series.name)
-        print(series, values)
         self.update_col(col_index, values)
 
     def set_series_column_by_name(self, series, col_name=None):

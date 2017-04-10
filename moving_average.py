@@ -3,7 +3,7 @@ import logging
 from pandas import Series
 
 import settings
-from google_spreadsheets import authorize, get_worksheet
+from google_spreadsheets import authorize, get_worksheet, input_spreadsheet_id
 
 log = logging.getLogger('moving_average')
 
@@ -31,7 +31,7 @@ class MovingAverage:
     def _calculate(self):
         self.validate_data()
 
-        self._data = Series(data=self._data, dtype=self._dtype).rolling(window=self._window, min_periods=2).mean()
+        self._data = Series(data=self._data, dtype=self._dtype).rolling(window=self._window).mean()
 
     def get_data(self):
         return self._data
@@ -43,9 +43,8 @@ def main():
     if not client:
         return 'Can\'t authenticate to google spreadsheets'
 
-    # google_spreadsheet_id = input_spreadsheet_id()
-    # sheet = get_spreadsheet(google_spreadsheet_id, client)
-    sheet = get_worksheet('1Cc4LKn1tUN3EEU_QpGvKPNIHxiKcBotp30GuVoPScUk', client)
+    google_spreadsheet_id = input_spreadsheet_id()
+    sheet = get_worksheet(google_spreadsheet_id, client)
     if not (sheet and sheet.rows):
         return 'Spreadsheet is empty or does not exist'
 
