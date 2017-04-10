@@ -12,7 +12,7 @@ def input_spreadsheet_id():
 
 def authorize(client_secret_filename):
     try:
-        client = pygsheets.authorize(client_secret_filename)
+        client = pygsheets.authorize(service_file=client_secret_filename)
     except Exception:
         return None
     else:
